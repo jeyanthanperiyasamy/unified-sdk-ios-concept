@@ -8,6 +8,13 @@ public class Davinci {
     }
 }
 
+public enum ModuleKeys: String {
+    case customHeader = "customHeader"
+    case nosession = "nosession"
+    case forceAuth = "forceAuth"
+}
+
+
 public class WorkFlow {
     let workFlowConfig: WorkflowConfig
     
@@ -29,11 +36,20 @@ public class WorkFlow {
         self.workFlowConfig.register(workFlow: self)
     }
     
-    func start(request: Request) async {
+    func start() async {
+        await start(request: request)
+    }
+    
+    
+    private func start(request: Request) async {
         do {
-            for block in start {
-                try await block(request)
+            
+            var updatedRequest = request
+            for block in next {
+                updatedRequest = try await block(updatedRequest)
             }
+            print("")
+            
         }
         catch {
             
@@ -45,14 +61,16 @@ public class WorkFlow {
 public class WorkflowConfig {
     
     // this needs to be Module name  private var modules: [Module: ModuleRegistry] = [:]
-    private var modules: [String: ModuleRegistry] = [:]
+    private var modules: [String: any ModuleRegistryProtocol] = [:]
     
     public var debug = false
     public var timeout = 0
     
     
-    public func module(block: Module, name: String) {
-        modules[name] = ModuleRegistry(module: block.setup)
+    public func module<T>(block: Module<T>, 
+                          name: String,
+                          config: T = Void.self) {
+        modules[name] = ModuleRegistry(module: block.setup, config: config)
     }
     
     public func register(workFlow: WorkFlow) {
@@ -62,40 +80,54 @@ public class WorkflowConfig {
     }
 }
 
-public class ModuleRegistry {
+protocol ModuleRegistryProtocol {
+    associatedtype Element
+    var config: Element { get }
+    var moduleValue: (Setup<Element>) -> (Void) { get }
+    func register(workflow: WorkFlow)
+}
+
+public class ModuleRegistry<T>: ModuleRegistryProtocol {
+    typealias Element = T
+        
+    let moduleValue: (Setup<T>) -> (Void)
+    let config: T
     
-    let moduleValue: (Setup) -> (Void)
-    
-    public init(module: @escaping (Setup) -> (Void)) {
-        moduleValue = module
+    public init(module: @escaping (Setup<T>) -> (Void), config: T) {
+        self.moduleValue = module
+        self.config = config
     }
     
     func register(workflow: WorkFlow) {
-        let setup = Setup(flow: workflow)
+        let setup = Setup(flow: workflow, config: self.config)
         moduleValue(setup)
     }
 }
 
 
-public class Module {
-    public var setup: (Setup) -> (Void)
+public class Module<T> {
+    public var setup: (Setup<T>) -> (Void)
+    public var config: T
     
-    init(type: @escaping (Setup) -> (Void)) {
+    init( config: T, type: @escaping (Setup<T>) -> (Void)) {
         self.setup = type
+        self.config = config
     }
     
-    static func of(block: @escaping (Setup) -> (Void)) -> Module {
-        return Module(type: block)
+    static func of(config: T = Void.self, block: @escaping (Setup<T>) -> (Void)) -> Module {
+        return Module<T>(config: config, type: block)
     }
     
 }
 
-public class Setup {
+public class Setup<T> {
      
     var workflow: WorkFlow
+    var config: T
     
-    init(flow: WorkFlow) {
+    init(flow: WorkFlow, config: T) {
         self.workflow = flow
+        self.config = config
     }
     
     func next(block: @escaping (Request) async throws -> Request) {
@@ -141,8 +173,11 @@ public class Orchestrator {
 
 
 public class Request {
+    
+    var urlValue: String? = nil
+    
     func url(url: String) {
-        
+        self.urlValue = url
     }
 }
     
@@ -157,8 +192,3 @@ public class Response {
 public class Success {
     
 }
-
-
-//typealias FlowRequest = (Flow, Request) -> Request
-
-//typealias BlockType = (Flow) -> (Request) -> Request

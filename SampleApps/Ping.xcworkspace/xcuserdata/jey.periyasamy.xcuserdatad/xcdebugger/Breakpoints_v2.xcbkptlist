@@ -3,4 +3,84 @@
    uuid = "EDC2E5F9-36FE-4BC9-9821-E46FB1433964"
    type = "0"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "947F9273-24E9-45AC-BF2C-2BDAB1D15020"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../PingOrchestrate/PingOrchestrateTests/PingOrchestrateTests.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "84"
+            endingLineNumber = "84"
+            landmarkName = "testExample()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "947F9273-24E9-45AC-BF2C-2BDAB1D15020 - ecbf4a6d3a3cb96f"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for PingOrchestrateTests.PingOrchestrateTests.testExample() async throws -&gt; ()"
+                  moduleName = "PingOrchestrateTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jey.periyasamy/Projects/Ping-Davinci/PingOrchestrate/PingOrchestrateTests/PingOrchestrateTests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "84"
+                  endingLineNumber = "84"
+                  offsetFromSymbolStart = "628">
+               </Location>
+               <Location
+                  uuid = "947F9273-24E9-45AC-BF2C-2BDAB1D15020 - c8625362b17c4612"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(2) await resume partial function for PingOrchestrateTests.PingOrchestrateTests.testExample() async throws -&gt; ()"
+                  moduleName = "PingOrchestrateTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jey.periyasamy/Projects/Ping-Davinci/PingOrchestrate/PingOrchestrateTests/PingOrchestrateTests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "84"
+                  endingLineNumber = "84"
+                  offsetFromSymbolStart = "48">
+               </Location>
+               <Location
+                  uuid = "947F9273-24E9-45AC-BF2C-2BDAB1D15020 - f7c92f2b61eff2d6"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for PingOrchestrateTests.PingOrchestrateTests.testExample() async throws -&gt; ()"
+                  moduleName = "PingOrchestrateTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jey.periyasamy/Projects/Ping-Davinci/PingOrchestrate/PingOrchestrateTests/PingOrchestrateTests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "57"
+                  endingLineNumber = "57"
+                  offsetFromSymbolStart = "76">
+               </Location>
+               <Location
+                  uuid = "947F9273-24E9-45AC-BF2C-2BDAB1D15020 - f7c92f2b61effd6d"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for PingOrchestrateTests.PingOrchestrateTests.testExample() async throws -&gt; ()"
+                  moduleName = "PingOrchestrateTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jey.periyasamy/Projects/Ping-Davinci/PingOrchestrate/PingOrchestrateTests/PingOrchestrateTests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "84"
+                  endingLineNumber = "84"
+                  offsetFromSymbolStart = "124">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>
