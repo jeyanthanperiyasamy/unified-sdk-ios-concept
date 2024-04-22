@@ -22,33 +22,39 @@ final class PingOrchestrateTests: XCTestCase {
 
     func testExample() async throws {
         
-        struct CustomerHeader {
+        class CustomerHeader {
             var name = "jey"
             var age = "bingo"
+            
+             func update(name: String, age: String) -> CustomerHeader{
+                self.name = name
+                self.age = age
+                return self
+            }
         }
         
         let header = CustomerHeader()
         
         let customHeader = Module<CustomerHeader>.of(config: header, block: { setup in
             setup.next { request in
-                request.url(url: "htttp://andy")
+                request.url = header.age
                 return request
             }
             
             setup.next { request in
-                request.url(url: "htttp://jey")
+                request.url = "htttp://randy"
                 return request
             }
         })
         
         let nosession = Module.of(block: { setup in
             setup.next { request in
-                request.url(url: "htttp://andy")
+                request.url = "htttp://andy"
                 return request
             }
             
             setup.next { request in
-                request.url(url: "htttp://bingo")
+                request.url = "htttp://andy"
                 return request
             }
         })
@@ -56,32 +62,36 @@ final class PingOrchestrateTests: XCTestCase {
         
         let forceAuth = Module.of(block: { setup in
             setup.next { request in
-                request.url(url: "htttp://stoyan")
+                request.url = "htttp://andy"
                 return request
             }
             
             setup.next { request in
-                request.url(url: "htttp://vahan")
+                request.url = "htttp://andy"
                 return request
             }
         })
         
-        
-       
         let workFlow = Davinci.config { config in
+            
             config.debug = true
             config.timeout = 10
             
-            config.module(block: customHeader, name: ModuleKeys.customHeader.rawValue, config: header)
+            config.module(block: customHeader, name: ModuleKeys.customHeader.rawValue) { header in
+                header.age = "20"
+                header.name = "40"
+            }
             
             config.module(block: nosession, name: ModuleKeys.nosession.rawValue)
-            
             config.module(block: forceAuth, name: ModuleKeys.forceAuth.rawValue)
            
           
         }
         
         await workFlow.start()
+        
+        
+        
     }
 
 }

@@ -24,12 +24,15 @@ public class WorkFlow {
     
     var next: [(Request) async throws -> Request] = []
     var start: [(Request) async throws -> Request] = []
-    var response: [(Response) async throws -> (Void)] = []
+    var response: [(ResponseState) async throws -> (Void)] = []
     var initialize: [() async throws -> (Void)] = []
     var signOff: [(Request) async throws -> (Request)] = []
     var node: [(Node) async throws -> Node] = []
     var success: [(Success) async throws -> Success] = []
-    var transform: [(Response) async throws -> Response] = []
+    
+    var transform: (ResponseState) async throws -> Node = { _ in EmptyState() }
+    
+    var flowcontext:[String: Any] = [:]
     
     init(config: WorkflowConfig) {
         self.workFlowConfig = config
@@ -42,13 +45,17 @@ public class WorkFlow {
     
     
     private func start(request: Request) async {
+        
+         flowcontext = [:]
+        
         do {
-            
             var updatedRequest = request
             for block in next {
                 updatedRequest = try await block(updatedRequest)
             }
-            print("")
+            
+            let result = await RestClient.shared.invoke(request: updatedRequest)
+            print(result)
             
         }
         catch {
@@ -57,11 +64,23 @@ public class WorkFlow {
     }
 }
 
+public class FlowContext {
+    let flowcontext: [String: Any] = [:]
+    
+    // need to move the corresponding functions here
+}
+
+public class WorkFlowContext {
+    let workFlowContext: [String: Any] = [:]
+    
+    // need to move the corresponding functions here
+}
+
 
 public class WorkflowConfig {
     
     // this needs to be Module name  private var modules: [Module: ModuleRegistry] = [:]
-    private var modules: [String: any ModuleRegistryProtocol] = [:]
+     var modules: [String: any ModuleRegistryProtocol] = [:]
     
     public var debug = false
     public var timeout = 0
@@ -69,8 +88,13 @@ public class WorkflowConfig {
     
     public func module<T>(block: Module<T>, 
                           name: String,
-                          config: T = Void.self) {
-        modules[name] = ModuleRegistry(module: block.setup, config: config)
+                          config: @escaping (T) -> (Void) = { _ in }) {
+        modules[name] = ModuleRegistry(module: block.setup, config: configValue(initalValue: block.config, nextValue: config))
+    }
+    
+    private func configValue<T>(initalValue: T, nextValue: @escaping (T) -> (Void)) -> ((T) -> (Void)) {
+        nextValue(initalValue)
+        return { initalValue in }
     }
     
     public func register(workFlow: WorkFlow) {
@@ -82,7 +106,7 @@ public class WorkflowConfig {
 
 protocol ModuleRegistryProtocol {
     associatedtype Element
-    var config: Element { get }
+    var config: (Element) -> (Void) { get }
     var moduleValue: (Setup<Element>) -> (Void) { get }
     func register(workflow: WorkFlow)
 }
@@ -91,9 +115,9 @@ public class ModuleRegistry<T>: ModuleRegistryProtocol {
     typealias Element = T
         
     let moduleValue: (Setup<T>) -> (Void)
-    let config: T
+    let config: (T) -> (Void)
     
-    public init(module: @escaping (Setup<T>) -> (Void), config: T) {
+    public init(module: @escaping (Setup<T>) -> (Void), config: @escaping (T) -> (Void)) {
         self.moduleValue = module
         self.config = config
     }
@@ -109,12 +133,12 @@ public class Module<T> {
     public var setup: (Setup<T>) -> (Void)
     public var config: T
     
-    init( config: T, type: @escaping (Setup<T>) -> (Void)) {
+     init( config: T, type: @escaping (Setup<T>) -> (Void)) {
         self.setup = type
         self.config = config
     }
     
-    static func of(config: T = Void.self, block: @escaping (Setup<T>) -> (Void)) -> Module {
+    public static func of(config: T = Void.self, block: @escaping (Setup<T>) -> (Void)) -> Module<T> {
         return Module<T>(config: config, type: block)
     }
     
@@ -123,42 +147,42 @@ public class Module<T> {
 public class Setup<T> {
      
     var workflow: WorkFlow
-    var config: T
+    var config: (T) -> (Void)
     
-    init(flow: WorkFlow, config: T) {
+    public init(flow: WorkFlow, config: @escaping (T) -> (Void)) {
         self.workflow = flow
         self.config = config
     }
     
-    func next(block: @escaping (Request) async throws -> Request) {
+    public func next(block: @escaping (Request) async throws -> Request) {
         workflow.next.append(block)
     }
     
-    func start(block: @escaping (Request) async throws -> Request) {
+    public func start(block: @escaping (Request) async throws -> Request) {
         workflow.start.append(block)
     }
     
-    func response(block: @escaping (Response) async throws -> Void) {
+    public func response(block: @escaping (ResponseState) async throws -> Void) {
         workflow.response.append(block)
     }
     
-    func nodeReceived(block: @escaping (Node) async throws -> Node) {
+    public func nodeReceived(block: @escaping (Node) async throws -> Node) {
         workflow.node.append(block)
     }
     
-    func success(block: @escaping (Success) async throws -> Success) {
+    public func success(block: @escaping (Success) async throws -> Success) {
         workflow.success.append(block)
     }
     
-    func transform(block: @escaping (Response) async throws -> Response) {
-        workflow.transform.append(block)
+    public func transform(block: @escaping (ResponseState) async throws -> Node) {
+        workflow.transform = block
     }
     
-    func signOff(block: @escaping (Request) async throws -> Request) {
+    public func signOff(block: @escaping (Request) async throws -> Request) {
         workflow.signOff.append(block)
     }
     
-    func initialize(block: @escaping () async throws -> (Void)) {
+    public func initialize(block: @escaping () async throws -> (Void)) {
         workflow.initialize.append(block)
     }
 
@@ -172,23 +196,10 @@ public class Orchestrator {
 }
 
 
-public class Request {
-    
-    var urlValue: String? = nil
-    
-    func url(url: String) {
-        self.urlValue = url
-    }
-}
-    
-public class Node {
-    
-}
+public protocol Node {}
 
-public class Response {
-    
-}
-
-public class Success {
-    
-}
+public class EmptyState: Node {}
+public class ResponseState: Node {}
+public class ErrorState: Node {}
+public class Connector: Node {}
+public class Success: Node {}

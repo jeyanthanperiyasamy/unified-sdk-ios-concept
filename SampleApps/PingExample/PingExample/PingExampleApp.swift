@@ -16,3 +16,4 @@ struct PingExampleApp: App {
         }
     }
 }
+

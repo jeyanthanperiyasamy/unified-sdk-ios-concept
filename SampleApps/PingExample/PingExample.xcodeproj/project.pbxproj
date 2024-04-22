@@ -16,6 +16,8 @@
 		3A5441422BCDF10B00385131 /* PingExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5441412BCDF10B00385131 /* PingExampleTests.swift */; };
 		3A54414C2BCDF10B00385131 /* PingExampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A54414B2BCDF10B00385131 /* PingExampleUITests.swift */; };
 		3A54414E2BCDF10B00385131 /* PingExampleUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A54414D2BCDF10B00385131 /* PingExampleUITestsLaunchTests.swift */; };
+		3AB1C9F42BD6C6F3003FCE3C /* DavinciViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB1C9F32BD6C6F3003FCE3C /* DavinciViewModel.swift */; };
+		3AB1C9FC2BD6CF3B003FCE3C /* OidcClientConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB1C9FB2BD6CF3B003FCE3C /* OidcClientConfig.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -105,6 +107,8 @@
 		3A54420F2BCE1F2900385131 /* PingDavinci.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PingDavinci.xcodeproj; path = ../../PingDavinci/PingDavinci.xcodeproj; sourceTree = "<group>"; };
 		3A5442182BCE1F3100385131 /* PingJourney.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PingJourney.xcodeproj; path = ../../PingJourney/PingJourney.xcodeproj; sourceTree = "<group>"; };
 		3A5442212BCE1F3800385131 /* PingOrchestrate.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PingOrchestrate.xcodeproj; path = ../../PingOrchestrate/PingOrchestrate.xcodeproj; sourceTree = "<group>"; };
+		3AB1C9F32BD6C6F3003FCE3C /* DavinciViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DavinciViewModel.swift; sourceTree = "<group>"; };
+		3AB1C9FB2BD6CF3B003FCE3C /* OidcClientConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OidcClientConfig.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,6 +166,8 @@
 			children = (
 				3A5441302BCDF10900385131 /* PingExampleApp.swift */,
 				3A5441322BCDF10900385131 /* ContentView.swift */,
+				3AB1C9F32BD6C6F3003FCE3C /* DavinciViewModel.swift */,
+				3AB1C9FB2BD6CF3B003FCE3C /* OidcClientConfig.swift */,
 				3A5441342BCDF10B00385131 /* Assets.xcassets */,
 				3A5441362BCDF10B00385131 /* Preview Content */,
 			);
@@ -418,7 +424,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				3A5441332BCDF10900385131 /* ContentView.swift in Sources */,
+				3AB1C9F42BD6C6F3003FCE3C /* DavinciViewModel.swift in Sources */,
 				3A5441312BCDF10900385131 /* PingExampleApp.swift in Sources */,
+				3AB1C9FC2BD6CF3B003FCE3C /* OidcClientConfig.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

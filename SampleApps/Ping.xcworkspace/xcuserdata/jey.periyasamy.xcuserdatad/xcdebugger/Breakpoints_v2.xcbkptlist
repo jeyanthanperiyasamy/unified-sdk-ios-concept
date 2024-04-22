@@ -7,21 +7,21 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "947F9273-24E9-45AC-BF2C-2BDAB1D15020"
+            uuid = "53B5F101-0077-4724-8097-AEF76205570B"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../PingOrchestrate/PingOrchestrateTests/PingOrchestrateTests.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "84"
-            endingLineNumber = "84"
+            startingLineNumber = "91"
+            endingLineNumber = "91"
             landmarkName = "testExample()"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "947F9273-24E9-45AC-BF2C-2BDAB1D15020 - ecbf4a6d3a3cb96f"
-                  shouldBeEnabled = "No"
+                  uuid = "53B5F101-0077-4724-8097-AEF76205570B - ecbf4a6d3a3cba76"
+                  shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "(1) suspend resume partial function for PingOrchestrateTests.PingOrchestrateTests.testExample() async throws -&gt; ()"
@@ -30,13 +30,13 @@
                   urlString = "file:///Users/jey.periyasamy/Projects/Ping-Davinci/PingOrchestrate/PingOrchestrateTests/PingOrchestrateTests.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "84"
-                  endingLineNumber = "84"
-                  offsetFromSymbolStart = "628">
+                  startingLineNumber = "91"
+                  endingLineNumber = "91"
+                  offsetFromSymbolStart = "556">
                </Location>
                <Location
-                  uuid = "947F9273-24E9-45AC-BF2C-2BDAB1D15020 - c8625362b17c4612"
-                  shouldBeEnabled = "No"
+                  uuid = "53B5F101-0077-4724-8097-AEF76205570B - c8625362b17c450b"
+                  shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "(2) await resume partial function for PingOrchestrateTests.PingOrchestrateTests.testExample() async throws -&gt; ()"
@@ -45,13 +45,13 @@
                   urlString = "file:///Users/jey.periyasamy/Projects/Ping-Davinci/PingOrchestrate/PingOrchestrateTests/PingOrchestrateTests.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "84"
-                  endingLineNumber = "84"
+                  startingLineNumber = "91"
+                  endingLineNumber = "91"
                   offsetFromSymbolStart = "48">
                </Location>
                <Location
-                  uuid = "947F9273-24E9-45AC-BF2C-2BDAB1D15020 - f7c92f2b61eff2d6"
-                  shouldBeEnabled = "No"
+                  uuid = "53B5F101-0077-4724-8097-AEF76205570B - f7c92f2b61eff210"
+                  shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "(3) suspend resume partial function for PingOrchestrateTests.PingOrchestrateTests.testExample() async throws -&gt; ()"
@@ -60,13 +60,13 @@
                   urlString = "file:///Users/jey.periyasamy/Projects/Ping-Davinci/PingOrchestrate/PingOrchestrateTests/PingOrchestrateTests.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "57"
-                  endingLineNumber = "57"
+                  startingLineNumber = "63"
+                  endingLineNumber = "63"
                   offsetFromSymbolStart = "76">
                </Location>
                <Location
-                  uuid = "947F9273-24E9-45AC-BF2C-2BDAB1D15020 - f7c92f2b61effd6d"
-                  shouldBeEnabled = "No"
+                  uuid = "53B5F101-0077-4724-8097-AEF76205570B - f7c92f2b61effe74"
+                  shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "(3) suspend resume partial function for PingOrchestrateTests.PingOrchestrateTests.testExample() async throws -&gt; ()"
@@ -75,9 +75,9 @@
                   urlString = "file:///Users/jey.periyasamy/Projects/Ping-Davinci/PingOrchestrate/PingOrchestrateTests/PingOrchestrateTests.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "84"
-                  endingLineNumber = "84"
-                  offsetFromSymbolStart = "124">
+                  startingLineNumber = "91"
+                  endingLineNumber = "91"
+                  offsetFromSymbolStart = "116">
                </Location>
             </Locations>
          </BreakpointContent>
