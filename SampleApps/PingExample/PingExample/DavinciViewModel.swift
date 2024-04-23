@@ -9,16 +9,34 @@ import Foundation
 import PingOrchestrate
 class DavinciViewModel {
     
-    func setup() {
-        let nosession = Module.of(block: { setup in
-            setup.next { request in
-                request.url = "htttp://andy"
-                return request
+    func header() {
+        func header(request: Request) -> Request {
+            request.headers["response_mode"] = "pi.flow"
+            request.headers["x-requested-with"] = "forgerock-sdk"
+            request.headers["x-requested-platform"] = "ios"
+            return request
+            }
+        
+        let sdkHeader = Module.of(block: { setup in
+            setup.start { request in
+                header(request: request)
             }
             
             setup.next { request in
-                request.url = "htttp://andy"
-                return request
+                header(request: request)
+            }
+        })
+        
+        let sessionconfig = SessionConfig()
+        
+        let Cookie = Module.of(config: sessionconfig, block: { setup in
+            setup.config.
+            setup.start { request in
+                header(request: request)
+            }
+            
+            setup.next { request in
+                header(request: request)
             }
         })
         
@@ -27,4 +45,11 @@ class DavinciViewModel {
 //        }
     }
     
+    
+    
 }
+
+class SessionConfig {
+    var storage = UserDefaults.standard
+}
+

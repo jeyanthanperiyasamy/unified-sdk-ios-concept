@@ -77,6 +77,20 @@
 			remoteGlobalIDString = 3A54417E2BCDF1D900385131;
 			remoteInfo = PingOrchestrateTests;
 		};
+		3AB1CA242BD6F9AD003FCE3C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3AB1CA1F2BD6F9AD003FCE3C /* PingOidc.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3AB1CA072BD6F99C003FCE3C;
+			remoteInfo = PingOidc;
+		};
+		3AB1CA262BD6F9AD003FCE3C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3AB1CA1F2BD6F9AD003FCE3C /* PingOidc.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3AB1CA0F2BD6F99C003FCE3C;
+			remoteInfo = PingOidcTests;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -109,6 +123,7 @@
 		3A5442212BCE1F3800385131 /* PingOrchestrate.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PingOrchestrate.xcodeproj; path = ../../PingOrchestrate/PingOrchestrate.xcodeproj; sourceTree = "<group>"; };
 		3AB1C9F32BD6C6F3003FCE3C /* DavinciViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DavinciViewModel.swift; sourceTree = "<group>"; };
 		3AB1C9FB2BD6CF3B003FCE3C /* OidcClientConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OidcClientConfig.swift; sourceTree = "<group>"; };
+		3AB1CA1F2BD6F9AD003FCE3C /* PingOidc.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PingOidc.xcodeproj; path = ../../PingOidc/PingOidc.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -140,6 +155,7 @@
 		3A5441242BCDF10900385131 = {
 			isa = PBXGroup;
 			children = (
+				3AB1CA1F2BD6F9AD003FCE3C /* PingOidc.xcodeproj */,
 				3A5442212BCE1F3800385131 /* PingOrchestrate.xcodeproj */,
 				3A5442182BCE1F3100385131 /* PingJourney.xcodeproj */,
 				3A54420F2BCE1F2900385131 /* PingDavinci.xcodeproj */,
@@ -229,6 +245,15 @@
 			children = (
 				3A5442272BCE1F3800385131 /* PingOrchestrate.framework */,
 				3A5442292BCE1F3800385131 /* PingOrchestrateTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3AB1CA202BD6F9AD003FCE3C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3AB1CA252BD6F9AD003FCE3C /* PingOidc.framework */,
+				3AB1CA272BD6F9AD003FCE3C /* PingOidcTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -334,6 +359,10 @@
 					ProjectRef = 3A5442182BCE1F3100385131 /* PingJourney.xcodeproj */;
 				},
 				{
+					ProductGroup = 3AB1CA202BD6F9AD003FCE3C /* Products */;
+					ProjectRef = 3AB1CA1F2BD6F9AD003FCE3C /* PingOidc.xcodeproj */;
+				},
+				{
 					ProductGroup = 3A5442222BCE1F3800385131 /* Products */;
 					ProjectRef = 3A5442212BCE1F3800385131 /* PingOrchestrate.xcodeproj */;
 				},
@@ -388,6 +417,20 @@
 			fileType = wrapper.cfbundle;
 			path = PingOrchestrateTests.xctest;
 			remoteRef = 3A5442282BCE1F3800385131 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3AB1CA252BD6F9AD003FCE3C /* PingOidc.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = PingOidc.framework;
+			remoteRef = 3AB1CA242BD6F9AD003FCE3C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3AB1CA272BD6F9AD003FCE3C /* PingOidcTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = PingOidcTests.xctest;
+			remoteRef = 3AB1CA262BD6F9AD003FCE3C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */

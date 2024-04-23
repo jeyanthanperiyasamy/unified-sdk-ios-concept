@@ -24,9 +24,9 @@ final class PingOrchestrateTests: XCTestCase {
         
         class CustomerHeader {
             var name = "jey"
-            var age = "bingo"
+            var age = 32
             
-             func update(name: String, age: String) -> CustomerHeader{
+             func update(name: String, age: Int) -> CustomerHeader {
                 self.name = name
                 self.age = age
                 return self
@@ -37,40 +37,41 @@ final class PingOrchestrateTests: XCTestCase {
         
         let customHeader = Module<CustomerHeader>.of(config: header, block: { setup in
             setup.next { request in
-                request.url = header.age
+                // get the context here
+                request.url = "\(header.age)"
                 return request
             }
             
             setup.next { request in
-                request.url = "htttp://randy"
+                request.url = header.name
                 return request
             }
         })
         
-        let nosession = Module.of(block: { setup in
-            setup.next { request in
-                request.url = "htttp://andy"
-                return request
-            }
-            
-            setup.next { request in
-                request.url = "htttp://andy"
-                return request
-            }
-        })
-        
-        
-        let forceAuth = Module.of(block: { setup in
-            setup.next { request in
-                request.url = "htttp://andy"
-                return request
-            }
-            
-            setup.next { request in
-                request.url = "htttp://andy"
-                return request
-            }
-        })
+//        let nosession = Module.of(block: { setup in
+//            setup.next { request in
+//                request.url = "htttp://andy"
+//                return request
+//            }
+//            
+//            setup.next { request in
+//                request.url = "htttp://andy"
+//                return request
+//            }
+//        })
+//        
+//        
+//        let forceAuth = Module.of(block: { setup in
+//            setup.next { request in
+//                request.url = "htttp://andy"
+//                return request
+//            }
+//            
+//            setup.next { request in
+//                request.url = "htttp://andy"
+//                return request
+//            }
+//        })
         
         let workFlow = Davinci.config { config in
             
@@ -78,12 +79,12 @@ final class PingOrchestrateTests: XCTestCase {
             config.timeout = 10
             
             config.module(block: customHeader, name: ModuleKeys.customHeader.rawValue) { header in
-                header.age = "20"
-                header.name = "40"
+                header.age = 20
+                header.name = "andy"
             }
             
-            config.module(block: nosession, name: ModuleKeys.nosession.rawValue)
-            config.module(block: forceAuth, name: ModuleKeys.forceAuth.rawValue)
+//            config.module(block: nosession, name: ModuleKeys.nosession.rawValue)
+//            config.module(block: forceAuth, name: ModuleKeys.forceAuth.rawValue)
            
           
         }

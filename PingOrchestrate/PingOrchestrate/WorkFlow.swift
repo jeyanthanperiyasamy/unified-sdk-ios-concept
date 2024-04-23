@@ -45,17 +45,13 @@ public class WorkFlow {
     
     
     private func start(request: Request) async {
-        
-         flowcontext = [:]
-        
+        flowcontext = [:]
         do {
             var updatedRequest = request
             for block in next {
                 updatedRequest = try await block(updatedRequest)
             }
-            
             let result = await RestClient.shared.invoke(request: updatedRequest)
-            print(result)
             
         }
         catch {
@@ -67,6 +63,8 @@ public class WorkFlow {
 public class FlowContext {
     let flowcontext: [String: Any] = [:]
     
+    
+    
     // need to move the corresponding functions here
 }
 
@@ -74,6 +72,19 @@ public class WorkFlowContext {
     let workFlowContext: [String: Any] = [:]
     
     // need to move the corresponding functions here
+}
+
+public class Context {
+    
+    let flowContext: FlowContext
+    let workflowContext: WorkFlowContext
+    
+    
+    init(flowcontex: FlowContext,
+         workFlowContex: WorkFlowContext) {
+        self.flowContext = flowcontex
+        self.workflowContext = workFlowContex
+    }
 }
 
 
@@ -92,9 +103,9 @@ public class WorkflowConfig {
         modules[name] = ModuleRegistry(module: block.setup, config: configValue(initalValue: block.config, nextValue: config))
     }
     
-    private func configValue<T>(initalValue: T, nextValue: @escaping (T) -> (Void)) -> ((T) -> (Void)) {
+    private func configValue<T>(initalValue: T, nextValue: @escaping (T) -> (Void)) -> T {
         nextValue(initalValue)
-        return { initalValue in }
+        return initalValue
     }
     
     public func register(workFlow: WorkFlow) {
@@ -106,7 +117,7 @@ public class WorkflowConfig {
 
 protocol ModuleRegistryProtocol {
     associatedtype Element
-    var config: (Element) -> (Void) { get }
+    var config: Element { get }
     var moduleValue: (Setup<Element>) -> (Void) { get }
     func register(workflow: WorkFlow)
 }
@@ -115,9 +126,9 @@ public class ModuleRegistry<T>: ModuleRegistryProtocol {
     typealias Element = T
         
     let moduleValue: (Setup<T>) -> (Void)
-    let config: (T) -> (Void)
+    let config: T
     
-    public init(module: @escaping (Setup<T>) -> (Void), config: @escaping (T) -> (Void)) {
+    public init(module: @escaping (Setup<T>) -> (Void), config: T) {
         self.moduleValue = module
         self.config = config
     }
@@ -147,9 +158,9 @@ public class Module<T> {
 public class Setup<T> {
      
     var workflow: WorkFlow
-    var config: (T) -> (Void)
+    var config: T
     
-    public init(flow: WorkFlow, config: @escaping (T) -> (Void)) {
+    public init(flow: WorkFlow, config: T) {
         self.workflow = flow
         self.config = config
     }
