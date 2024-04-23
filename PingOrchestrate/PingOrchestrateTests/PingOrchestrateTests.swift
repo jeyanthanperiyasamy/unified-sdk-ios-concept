@@ -9,92 +9,83 @@ import XCTest
 @testable import PingOrchestrate
 
 final class PingOrchestrateTests: XCTestCase {
-
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
     
-    // Same instance but configuration
-
-    func testExample() async throws {
+    
+    func testWorkFlow() async throws {
         
-        class CustomerHeader {
-            var name = "jey"
-            var age = 32
-            
-             func update(name: String, age: Int) -> CustomerHeader {
-                self.name = name
-                self.age = age
-                return self
-            }
+        class CustomHeaderConfig {
+            var enable = true
+            var headerValue = "iOS-SDK"
+            var headerName = "header-name"
         }
         
-        let header = CustomerHeader()
         
-        let customHeader = Module<CustomerHeader>.of(config: header, block: { setup in
-            setup.next { request in
-                // get the context here
-                request.url = "\(header.age)"
+        let customHeader = Module.of(config: { CustomHeaderConfig() }, block: { setup in
+            let config = setup.config
+            setup.next { ( context, request) in
+                if config.enable {
+                    request.url("https://pingfederate.prod-ping.us1.ping.cloud/")
+                    request.header(name: config.headerName, value: config.headerValue)
+                }
                 return request
             }
             
-            setup.next { request in
-                request.url = header.name
+            setup.start { ( context, request) in
+                if config.enable {
+                    request.header(name: config.headerName, value: config.headerValue)
+                }
                 return request
             }
         })
         
-//        let nosession = Module.of(block: { setup in
-//            setup.next { request in
-//                request.url = "htttp://andy"
-//                return request
-//            }
-//            
-//            setup.next { request in
-//                request.url = "htttp://andy"
-//                return request
-//            }
-//        })
-//        
-//        
-//        let forceAuth = Module.of(block: { setup in
-//            setup.next { request in
-//                request.url = "htttp://andy"
-//                return request
-//            }
-//            
-//            setup.next { request in
-//                request.url = "htttp://andy"
-//                return request
-//            }
-//        })
         
-        let workFlow = Davinci.config { config in
-            
+        let nosession = Module.of(block: { setup in
+            setup.next { ( context, request) in
+                request.header(name: "nosession", value: "true")
+                return request
+            }
+        })
+        
+        
+        let forceAuth = Module.of(block: { setup in
+            setup.start { ( context, request) in
+                request.header(name: "forceAuth", value: "true")
+                return request
+            }
+        })
+        
+        
+        
+        let workFlow = WorkFlow.config { config in
             config.debug = true
             config.timeout = 10
             
             config.module(block: customHeader, name: ModuleKeys.customHeader.rawValue) { header in
-                header.age = 20
-                header.name = "andy"
+                header.headerName = "iOS-SDK1"
+                header.headerValue = "headervalue2"
             }
             
-//            config.module(block: nosession, name: ModuleKeys.nosession.rawValue)
-//            config.module(block: forceAuth, name: ModuleKeys.forceAuth.rawValue)
-           
-          
+            config.module(block: forceAuth, name: ModuleKeys.forceAuth.rawValue)
+            config.module(block: nosession, name: ModuleKeys.nosession.rawValue)
         }
         
-        await workFlow.start()
+        let workFlow1 = WorkFlow.config { config in
+            
+            config.module(block: customHeader, name: ModuleKeys.customHeader.rawValue) { header in
+                header.headerName = "iOS-SDK2"
+                header.headerValue = "headervalue3"
+            }
+            
+        }
         
         
+        
+        _ = await workFlow.start()
+        XCTAssertEqual(workFlow.workFlowConfig.modules.count, 3)
+        XCTAssertEqual(workFlow1.workFlowConfig.modules.count, 3)
         
     }
-
+    
 }
 
 

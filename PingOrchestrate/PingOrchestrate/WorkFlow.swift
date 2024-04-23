@@ -1,6 +1,13 @@
+//
+//  SampleRequest.swift
+//  PingOrchestrate
+//
+//  Created by jey periyasamy on 4/24/24.
+//
+
 import Foundation
 
-public class Davinci {
+extension WorkFlow {
     public static func config(block: (WorkflowConfig) -> Void) -> WorkFlow {
         let workFlowConfig = WorkflowConfig()
         block(workFlowConfig)
@@ -18,72 +25,143 @@ public enum ModuleKeys: String {
 public class WorkFlow {
     let workFlowConfig: WorkflowConfig
     
+    let context = Context()
+    
     let request = Request()
+    
+    let httpclient = URLSession.shared
+    
+    private let lock = NSLock()
+    
+    private var started = false
     
     // state
     
-    var next: [(Request) async throws -> Request] = []
-    var start: [(Request) async throws -> Request] = []
-    var response: [(ResponseState) async throws -> (Void)] = []
-    var initialize: [() async throws -> (Void)] = []
-    var signOff: [(Request) async throws -> (Request)] = []
-    var node: [(Node) async throws -> Node] = []
-    var success: [(Success) async throws -> Success] = []
+    var initFunctions = [() async -> Void]()
+    var startFunctions = [(FlowContext, Request) async -> Request]()
+    var nextFunctions = [(FlowContext, Request) async -> Request]()
+    var responseFunctions = [(FlowContext, Response) async -> Void]()
+    var nodeFunctions = [(FlowContext, Node) async -> Node]()
+    var successFunctions = [(FlowContext, Success) async -> Success]()
+    var signOffFunctions = [(Request) async -> Request]()
     
-    var transform: (ResponseState) async throws -> Node = { _ in EmptyState() }
+    var transformFunction: (FlowContext, Response) async -> Node = { _, _ in Empty() }
     
-    var flowcontext:[String: Any] = [:]
     
     init(config: WorkflowConfig) {
         self.workFlowConfig = config
         self.workFlowConfig.register(workFlow: self)
     }
     
-    func start() async {
-        await start(request: request)
-    }
     
-    
-    private func start(request: Request) async {
-        flowcontext = [:]
-        do {
-            var updatedRequest = request
-            for block in next {
-                updatedRequest = try await block(updatedRequest)
+    private func initialize() async {
+        if !started {
+            for initBlock in initFunctions {
+                await initBlock()
             }
-            let result = await RestClient.shared.invoke(request: updatedRequest)
-            
-        }
-        catch {
-            
+            started = true
         }
     }
+    
+    func start(request: Request) async -> Node {
+        await initialize()
+        let context = FlowContext(context: context)
+        var req = request
+        for startBlock in startFunctions {
+            req = await startBlock(context, req)
+        }
+        let response = await send(context, request: req)
+        return await next(context, await transformFunction(context, response))
+    }
+    
+    func start() async -> Node {
+        return await start(request: Request())
+    }
+    
+    private func send(_ context: FlowContext, request: Request) async -> Response {
+        let urlRequest = request.urlRequest
+        let (data, response) = try! await URLSession.shared.data(for: urlRequest)
+        let resp = Response(data: data, response: response)
+        for responseBlock in responseFunctions {
+            await responseBlock(context, resp)
+        }
+        return resp
+    }
+    
+    private func send(_ request: Request) async -> Response {
+        let urlRequest = request.urlRequest
+        let (data, response) = try! await URLSession.shared.data(for: urlRequest)
+        return Response(data: data, response: response)
+    }
+    
+    func next(_ context: FlowContext, _ node: Node) async -> Node {
+        if let success = node as? Success {
+            var result = success
+            for successBlock in successFunctions {
+                result = await successBlock(context, result)
+            }
+            return result
+        } else {
+            return node
+        }
+    }
+    
+    func next(_ context: FlowContext, _ current: Connector) async -> Node {
+        let initialRequest = current.asRequest()
+        var request = initialRequest
+        for nextBlock in nextFunctions {
+            request = await nextBlock(context, request)
+        }
+        let initialNode = await transformFunction(context, await send(context, request: request))
+        var node = initialNode
+        for nodeBlock in nodeFunctions {
+            node = await nodeBlock(context, node)
+        }
+        return node
+    }
+    
+    func signOff() async -> Response {
+        await initialize()
+        var request = Request()
+        for signOffBlock in signOffFunctions {
+            request = await signOffBlock(request)
+        }
+        return await send(request)
+    }
+    
+    
+    private func response(context: FlowContext, response: Response) async throws {
+        for function in responseFunctions {
+            await function(context, response)
+        }
+    }
+    
 }
+
 
 public class FlowContext {
-    let flowcontext: [String: Any] = [:]
+    let flowContext: Context
     
-    
-    
-    // need to move the corresponding functions here
-}
-
-public class WorkFlowContext {
-    let workFlowContext: [String: Any] = [:]
+    init(context: Context) {
+        self.flowContext = context
+    }
     
     // need to move the corresponding functions here
 }
 
-public class Context {
+// MARK: - Context
+public class  Context {
+    private var map: [String: Any] = [:]
     
-    let flowContext: FlowContext
-    let workflowContext: WorkFlowContext
+    // Initialize the Context with an empty dictionary or a pre-existing one
+    public init(_ map: [String: Any] = [:]) {
+        self.map = map
+    }
     
     
-    init(flowcontex: FlowContext,
-         workFlowContex: WorkFlowContext) {
-        self.flowContext = flowcontex
-        self.workflowContext = workFlowContex
+    subscript<T>(key: String) -> T? {
+        get { return map[key] as? T }
+        set { map[key] = newValue }
     }
 }
 
@@ -91,21 +169,25 @@ public class Context {
 public class WorkflowConfig {
     
     // this needs to be Module name  private var modules: [Module: ModuleRegistry] = [:]
-     var modules: [String: any ModuleRegistryProtocol] = [:]
+    
+   // let cache = NSCache<Module<Any>, ModuleRegistry<Any>>()
+    
+    var modules: [String: any ModuleRegistryProtocol] = [:]
     
     public var debug = false
     public var timeout = 0
     
     
-    public func module<T>(block: Module<T>, 
+    public func module<T>(block: Module<T>,
                           name: String,
                           config: @escaping (T) -> (Void) = { _ in }) {
-        modules[name] = ModuleRegistry(module: block.setup, config: configValue(initalValue: block.config, nextValue: config))
+        modules[name] = ModuleRegistry(module: block.setup, config: configValue(initalValue: block.config, nextValue: config) )
     }
     
-    private func configValue<T>(initalValue: T, nextValue: @escaping (T) -> (Void)) -> T {
-        nextValue(initalValue)
-        return initalValue
+    private func configValue<T>(initalValue: @escaping () -> (T), nextValue: @escaping (T) -> (Void)) -> T {
+        let initConfig = initalValue()
+        nextValue(initConfig)
+        return initConfig
     }
     
     public func register(workFlow: WorkFlow) {
@@ -122,9 +204,11 @@ protocol ModuleRegistryProtocol {
     func register(workflow: WorkFlow)
 }
 
+
+
 public class ModuleRegistry<T>: ModuleRegistryProtocol {
     typealias Element = T
-        
+    
     let moduleValue: (Setup<T>) -> (Void)
     let config: T
     
@@ -134,7 +218,7 @@ public class ModuleRegistry<T>: ModuleRegistryProtocol {
     }
     
     func register(workflow: WorkFlow) {
-        let setup = Setup(flow: workflow, config: self.config)
+        let setup = Setup(workflow: workflow, config: self.config)
         moduleValue(setup)
     }
 }
@@ -142,75 +226,60 @@ public class ModuleRegistry<T>: ModuleRegistryProtocol {
 
 public class Module<T> {
     public var setup: (Setup<T>) -> (Void)
-    public var config: T
+    public var config: () -> (T)
     
-     init( config: T, type: @escaping (Setup<T>) -> (Void)) {
+    init( config: @escaping () -> (T), type: @escaping (Setup<T>) -> (Void)) {
         self.setup = type
         self.config = config
     }
     
-    public static func of(config: T = Void.self, block: @escaping (Setup<T>) -> (Void)) -> Module<T> {
+    public static func of(config: @escaping (() -> (T)) = {} , block: @escaping (Setup<T>) -> (Void)) -> Module<T> {
         return Module<T>(config: config, type: block)
     }
     
 }
 
-public class Setup<T> {
-     
-    var workflow: WorkFlow
-    var config: T
+// Setup class for configuring workflow operations
+public class Setup<ModuleConfig> {
+    let workflow: WorkFlow
+    let context: Context
+    let config: ModuleConfig
     
-    public init(flow: WorkFlow, config: T) {
-        self.workflow = flow
+    public init(workflow: WorkFlow, context: Context = Context(), config: ModuleConfig) {
+        self.workflow = workflow
+        self.context = context
         self.config = config
     }
     
-    public func next(block: @escaping (Request) async throws -> Request) {
-        workflow.next.append(block)
+    func initialize(block: @escaping () async -> Void) {
+        workflow.initFunctions.append(block)
     }
     
-    public func start(block: @escaping (Request) async throws -> Request) {
-        workflow.start.append(block)
+    func start(block: @escaping (FlowContext, Request) async -> Request) {
+        workflow.startFunctions.append(block)
     }
     
-    public func response(block: @escaping (ResponseState) async throws -> Void) {
-        workflow.response.append(block)
+    func next(block: @escaping (FlowContext, Request) async -> Request) {
+        workflow.nextFunctions.append(block)
     }
     
-    public func nodeReceived(block: @escaping (Node) async throws -> Node) {
-        workflow.node.append(block)
+    func response(block: @escaping (FlowContext, Response) async -> Void) {
+        workflow.responseFunctions.append(block)
     }
     
-    public func success(block: @escaping (Success) async throws -> Success) {
-        workflow.success.append(block)
+    func nodeReceived(block: @escaping (FlowContext, Node) async -> Node) {
+        workflow.nodeFunctions.append(block)
     }
     
-    public func transform(block: @escaping (ResponseState) async throws -> Node) {
-        workflow.transform = block
+    func success(block: @escaping (FlowContext, Success) async -> Success) {
+        workflow.successFunctions.append(block)
     }
     
-    public func signOff(block: @escaping (Request) async throws -> Request) {
-        workflow.signOff.append(block)
+    func transform(block: @escaping (FlowContext, Response) async -> Node) {
+        workflow.transformFunction = block
     }
     
-    public func initialize(block: @escaping () async throws -> (Void)) {
-        workflow.initialize.append(block)
-    }
-
-}
-
-
-public class Orchestrator {
-    func execute(request: Request) -> Request {
-        return request
+    func signOff(block: @escaping (Request) async -> Request) {
+        workflow.signOffFunctions.append(block)
     }
 }
-
-
-public protocol Node {}
-
-public class EmptyState: Node {}
-public class ResponseState: Node {}
-public class ErrorState: Node {}
-public class Connector: Node {}
-public class Success: Node {}

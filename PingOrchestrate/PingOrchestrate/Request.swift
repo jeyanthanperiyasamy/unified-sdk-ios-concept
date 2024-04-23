@@ -1,210 +1,77 @@
 //
-//  Request.swift
-//  FRCore
+//  SampleRequest.swift
+//  PingOrchestrate
 //
-//  Copyright (c) 2020-2024 ForgeRock. All rights reserved.
-//
-//  This software may be modified and distributed under the terms
-//  of the MIT license. See the LICENSE file for details.
+//  Created by jey periyasamy on 4/24/24.
 //
 
 import Foundation
 
-/**
- Generic representation of API request specifically designed by, and used by ForgeRock iOS SDK core
- */
+import UIKit
+
+public struct Cookies {
+    // Define your Cookies structure as needed
+    // You can use a dictionary to hold cookie key-value pairs
+    // For example:
+    public var cookies: [String: String] = [:]
+}
+
 public class Request {
+    var urlRequest: URLRequest
     
-    /// Enumeration for ContentType used in request/response
-    ///
-    /// - plainText: "text/plain"
-    /// - json: "application/json"
-    /// - urlEncoded: "application/x-www-form-urlencoded"
-    public enum ContentType: String {
-        case plainText = "text/plain"
-        case json = "application/json"
-        case urlEncoded = "application/x-www-form-urlencoded"
+    public init() {
+        self.urlRequest = URLRequest(url: URL(string: "https://google.com")!) // Initialize with a default URL
     }
     
-    /// Enumeration for HTTP methods
-    ///
-    /// - GET: GET
-    /// - PUT: PUT
-    /// - POST: POST
-    /// - DELETE: DELETE
-    public enum HTTPMethod: String {
-        case GET = "GET"
-        case PUT = "PUT"
-        case POST = "POST"
-        case DELETE = "DELETE"
+    public func url(_ urlString: String) {
+        if let url = URL(string: urlString) {
+            self.urlRequest = URLRequest(url: url)
+        }
     }
     
-    
-    //  MARK: - Property
-    
-    /// String value of request URL
-    public var url: String = ""
-    /// HTTP Method as String
-    public var method: HTTPMethod = .GET
-    /// HTTP request headers as dictionary
-    public var headers: [String: String] = [:]
-    /// HTTP body parameters as dictionary
-    public var bodyParams: [String: Any] = [:]
-    /// URL parameters as dictionary
-    public var urlParams: [String: String] = [:]
-    /// Response type as `ContentType`; "Accept" header will be automatically added
-    public var responseType: ContentType? = .json
-    /// Request type as `ContentType`; "Content-type" header will be automatically added
-    public var requestType: ContentType = .json
-    /// Request timeout interval in second
-    public var timeoutInterval: Double = 60
-    
-    
-    //  MARK: - Init
-    
-    /// Initializes a Request object to invoke API request
-    ///
-    /// - Parameters:
-    ///   - url: Full URL, including path, of API request
-    ///   - method: HTTP method for the request
-    ///   - headers: Additional HTTP headers for the request in dictionary
-    ///   - bodyParams: HTTP body in dictionary
-    ///   - urlParams: URL parameters in dictionary
-    ///   - requestType: ContentType of request content; enumeration value of `ContentType`
-    ///   - responseType: ContentType of expected response content; enumeration value of `ContentType`
-    ///   - timeoutInterval: Timeout interval in second for the request
-    public init(url: String = "", method: HTTPMethod = .GET, headers: [String: String] = [:], bodyParams: [String: Any] = [:], urlParams: [String: String] = [:], requestType: ContentType = .json, responseType: ContentType? = .json, timeoutInterval: Double = 60) {
-        self.url = url
-        self.method = method
-        self.headers = headers
-        self.bodyParams = bodyParams
-        self.urlParams = urlParams
-        self.requestType = requestType
-        self.responseType = responseType
-        self.timeoutInterval = timeoutInterval
-    }
-    
-    
-    //  MARK: - Build
-    
-    /// Updates and merges HTTP header with new header values
-    /// - Parameter headers: merged HTTP header dictionary
-    public func updateHeader(headers: [String: String]) {
-        self.headers.merge(headers) { (_, new) in new }
-    }
-    
-    
-    /// Builds `URLRequest` object based on `Request` instance
-    ///
-    /// - Returns: URLRequest object if `Request` object was valid; otherwise `nil` is returned
-    public func build() -> URLRequest? {
-        
-        //  Validate URL is valid
-        guard var urlComponents = URLComponents(string: self.url), self.url.isValidUrl else {
-            print("Missing or invalid URL; request will fail: \(self.url)")
-            return nil
-        }
-
-        if self.urlParams.count > 0 {
-            //  Build URL Parameters
-            urlComponents.queryItems = self.urlParams.map{ URLQueryItem(name: $0.key, value: $0.value)}
-        }
-        
-        //  Make sure that URL can be constructed with URL string, and URL parameters
-        guard let thisUrl = urlComponents.url else {
-            print("Failed to generate URL with URL parameter; request will fail: \(self.url) | \(self.urlParams)")
-            return nil
-        }
-        
-        //  Build `URLRequest` object with constructed URL object
-        let thisRequest = NSMutableURLRequest(url: thisUrl, cachePolicy: .useProtocolCachePolicy, timeoutInterval: self.timeoutInterval)
-        //  Set HTTP method
-        thisRequest.httpMethod = self.method.rawValue
-               
-        //  Set Content-Type, and Accept headers based on request/response types
-        thisRequest.setValue(self.requestType.rawValue, forHTTPHeaderField: RequestConstants.contentType)
-        if let responseType = self.responseType {
-            thisRequest.setValue(responseType.rawValue, forHTTPHeaderField: RequestConstants.accept)
-        }
-        //  Add additional headers
-        self.headers.forEach{ thisRequest.setValue($0.value, forHTTPHeaderField: $0.key) }
-        
-        // Set platform idnetifying headers, that cannot be overriden by interceptors
-        thisRequest.setValue(RequestConstants.forgerockSdk, forHTTPHeaderField: RequestConstants.xRequestedWith)
-        thisRequest.setValue(RequestConstants.ios, forHTTPHeaderField: RequestConstants.xRequestedPlatform)
-        //  Build http body content
-        // TODO: dynamically handle more content-type
-        if self.bodyParams.keys.count > 0 {
-            if ![HTTPMethod.DELETE, HTTPMethod.GET].contains(method) {
-                if requestType == .json {
-                    do {
-                        thisRequest.httpBody = try JSONSerialization.data(withJSONObject: self.bodyParams, options: [])
-                    }
-                    catch {
-                        print("Failed to serialize HTTP Body: \(self.bodyParams)")
-                    }
-                }
-                else if requestType == .urlEncoded {
-                    let urlEncoded = bodyParams.map{ "\($0)=\($1)" }.joined(separator: "&")
-                    thisRequest.httpBody = Data(urlEncoded.utf8)
-                }
+    public func parameter(name: String, value: String) {
+        if var components = URLComponents(url: self.urlRequest.url!, resolvingAgainstBaseURL: false) {
+            if components.queryItems == nil {
+                components.queryItems = []
             }
-            else {
-                print("Ignoring body parameters for GET/DELETE request; \(self.bodyParams)")
+            components.queryItems?.append(URLQueryItem(name: name, value: value))
+            if let updatedURL = components.url {
+                self.urlRequest.url = updatedURL
             }
         }
-        
-        let debugDesc = "\n**URLRequest built**\nURLRequest: URL: [\(thisRequest.httpMethod)] \(thisRequest.url?.absoluteString ?? "")\nHeaders: \(String(describing: thisRequest.allHTTPHeaderFields))\nBody: \(String(describing: String(data: thisRequest.httpBody ?? Data(), encoding: .utf8)))\nTimeout: \(thisRequest.timeoutInterval)"
-        print(debugDesc)
-        
-        //  Return URLRequest
-        return thisRequest as URLRequest
     }
     
-    
-    //  MARK: - Debug
-    
-    /// Generates debug description string of `Request` instance
-    var debugDescription: String {
-        var desc = "Request: \(self.url) | \(self.method.rawValue) \r\n"
-        desc += "   Request Type: \(self.requestType.rawValue) | Response Type: \(self.responseType?.rawValue ?? "not set") \r\n"
-        if self.urlParams.count > 0 {
-            desc += "   URL Parameters: \r\n"
-            self.urlParams.forEach{ desc += "       \($0.key): \($0.value) \r\n"}
-        }
-        if !self.bodyParams.isEmpty {
-            desc += "   Body Parameters: \r\n"
-            desc += "       \(self.bodyParams)"
-        }
-        if self.headers.count > 0 {
-            desc += "   Additional Headers: \r\n"
-            self.headers.forEach{ desc += "       \($0.key): \($0.value) \r\n"}
-        }
-        desc += "   Timeout Interval: \(self.timeoutInterval)"
-        
-        return desc
+    public func header(name: String, value: String) {
+        self.urlRequest.addValue(value, forHTTPHeaderField: name)
     }
-}
-
-extension String {
     
-    /// Validates whether given String is a valid URL or not
-    public var isValidUrl: Bool {
-        let types: NSTextCheckingResult.CheckingType = [.link]
-        let detector = try? NSDataDetector(types: types.rawValue)
-        guard (detector != nil && self.count > 0) else { return false }
-        if detector!.numberOfMatches(in: self, options: NSRegularExpression.MatchingOptions(rawValue: 0), range: NSMakeRange(0, self.count)) > 0 {
-            return true
+    public func cookies(cookies: Cookies) {
+        for (name, value) in cookies.cookies {
+            let cookieString = "\(name)=\(value)"
+            self.urlRequest.addValue(cookieString, forHTTPHeaderField: "Cookie")
         }
-        return false
+    }
+    
+    public func body(body: [String: Any]) {
+        do {
+            self.urlRequest.httpMethod = "POST"
+            self.urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            self.urlRequest.httpBody = try JSONSerialization.data(withJSONObject: body, options: [])
+        } catch {
+            print("Error encoding JSON: \(error)")
+        }
+    }
+    
+    public func form(formData: [String: String]) {
+        var formString = ""
+        for (key, value) in formData {
+            formString += "\(key)=\(value)&"
+        }
+        formString.removeLast() // Remove the last '&' character
+        
+        self.urlRequest.httpMethod = "POST"
+        self.urlRequest.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        self.urlRequest.httpBody = formString.data(using: .utf8)
     }
 }
 
-enum RequestConstants {
-    static let contentType = "Content-Type"
-    static let accept = "Accept"
-    static let xRequestedWith = "x-requested-with"
-    static let xRequestedPlatform = "x-requested-platform"
-    static let forgerockSdk = "forgerock-sdk"
-    static let ios = "ios"
-}

@@ -8,17 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		3A12F9BE2BCE20B50087DF67 /* WorkFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A12F9BD2BCE20B50087DF67 /* WorkFlow.swift */; };
+		3A203D592BD9DC600020C995 /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A203D582BD9DC600020C995 /* Request.swift */; };
+		3A203D5B2BD9E2C80020C995 /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A203D5A2BD9E2C80020C995 /* Node.swift */; };
+		3A203D772BDA1CEC0020C995 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 3A203D762BDA1CEC0020C995 /* README.md */; };
 		3A5441792BCDF1D900385131 /* PingOrchestrate.docc in Sources */ = {isa = PBXBuildFile; fileRef = 3A5441782BCDF1D900385131 /* PingOrchestrate.docc */; };
 		3A54417F2BCDF1D900385131 /* PingOrchestrate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A5441742BCDF1D900385131 /* PingOrchestrate.framework */; };
 		3A5441842BCDF1D900385131 /* PingOrchestrateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5441832BCDF1D900385131 /* PingOrchestrateTests.swift */; };
 		3A5441852BCDF1D900385131 /* PingOrchestrate.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A5441772BCDF1D900385131 /* PingOrchestrate.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		3AB1C9E72BD6410A003FCE3C /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB1C9E32BD6410A003FCE3C /* Request.swift */; };
-		3AB1C9E82BD6410A003FCE3C /* RestClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB1C9E42BD6410A003FCE3C /* RestClient.swift */; };
 		3AB1C9E92BD6410A003FCE3C /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB1C9E52BD6410A003FCE3C /* Response.swift */; };
-		3AB1C9EA2BD6410A003FCE3C /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB1C9E62BD6410A003FCE3C /* Result.swift */; };
-		3AB1C9ED2BD64679003FCE3C /* FRURLSessionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB1C9EB2BD64679003FCE3C /* FRURLSessionHandler.swift */; };
-		3AB1C9EE2BD64679003FCE3C /* FRSecurityConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB1C9EC2BD64679003FCE3C /* FRSecurityConfiguration.swift */; };
-		3AB1C9F12BD6B2F9003FCE3C /* FRRestClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB1C9EF2BD6B2F9003FCE3C /* FRRestClient.swift */; };
 		3AB1C9F22BD6B2F9003FCE3C /* FRHTTPCookie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB1C9F02BD6B2F9003FCE3C /* FRHTTPCookie.swift */; };
 /* End PBXBuildFile section */
 
@@ -34,18 +31,15 @@
 
 /* Begin PBXFileReference section */
 		3A12F9BD2BCE20B50087DF67 /* WorkFlow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkFlow.swift; sourceTree = "<group>"; };
+		3A203D582BD9DC600020C995 /* Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
+		3A203D5A2BD9E2C80020C995 /* Node.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
+		3A203D762BDA1CEC0020C995 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		3A5441742BCDF1D900385131 /* PingOrchestrate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PingOrchestrate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A5441772BCDF1D900385131 /* PingOrchestrate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PingOrchestrate.h; sourceTree = "<group>"; };
 		3A5441782BCDF1D900385131 /* PingOrchestrate.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = PingOrchestrate.docc; sourceTree = "<group>"; };
 		3A54417E2BCDF1D900385131 /* PingOrchestrateTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PingOrchestrateTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A5441832BCDF1D900385131 /* PingOrchestrateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PingOrchestrateTests.swift; sourceTree = "<group>"; };
-		3AB1C9E32BD6410A003FCE3C /* Request.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
-		3AB1C9E42BD6410A003FCE3C /* RestClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestClient.swift; sourceTree = "<group>"; };
 		3AB1C9E52BD6410A003FCE3C /* Response.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Response.swift; sourceTree = "<group>"; };
-		3AB1C9E62BD6410A003FCE3C /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
-		3AB1C9EB2BD64679003FCE3C /* FRURLSessionHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FRURLSessionHandler.swift; sourceTree = "<group>"; };
-		3AB1C9EC2BD64679003FCE3C /* FRSecurityConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FRSecurityConfiguration.swift; sourceTree = "<group>"; };
-		3AB1C9EF2BD6B2F9003FCE3C /* FRRestClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FRRestClient.swift; sourceTree = "<group>"; };
 		3AB1C9F02BD6B2F9003FCE3C /* FRHTTPCookie.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FRHTTPCookie.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -71,6 +65,7 @@
 		3A54416A2BCDF1D900385131 = {
 			isa = PBXGroup;
 			children = (
+				3A203D762BDA1CEC0020C995 /* README.md */,
 				3A5441762BCDF1D900385131 /* PingOrchestrate */,
 				3A5441822BCDF1D900385131 /* PingOrchestrateTests */,
 				3A5441752BCDF1D900385131 /* Products */,
@@ -90,14 +85,10 @@
 			isa = PBXGroup;
 			children = (
 				3AB1C9F02BD6B2F9003FCE3C /* FRHTTPCookie.swift */,
-				3AB1C9EF2BD6B2F9003FCE3C /* FRRestClient.swift */,
-				3AB1C9EC2BD64679003FCE3C /* FRSecurityConfiguration.swift */,
-				3AB1C9EB2BD64679003FCE3C /* FRURLSessionHandler.swift */,
-				3AB1C9E32BD6410A003FCE3C /* Request.swift */,
 				3AB1C9E52BD6410A003FCE3C /* Response.swift */,
-				3AB1C9E42BD6410A003FCE3C /* RestClient.swift */,
-				3AB1C9E62BD6410A003FCE3C /* Result.swift */,
 				3A12F9BD2BCE20B50087DF67 /* WorkFlow.swift */,
+				3A203D582BD9DC600020C995 /* Request.swift */,
+				3A203D5A2BD9E2C80020C995 /* Node.swift */,
 				3A5441772BCDF1D900385131 /* PingOrchestrate.h */,
 				3A5441782BCDF1D900385131 /* PingOrchestrate.docc */,
 			);
@@ -204,6 +195,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3A203D772BDA1CEC0020C995 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -221,16 +213,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3AB1C9EE2BD64679003FCE3C /* FRSecurityConfiguration.swift in Sources */,
-				3AB1C9EA2BD6410A003FCE3C /* Result.swift in Sources */,
-				3AB1C9E82BD6410A003FCE3C /* RestClient.swift in Sources */,
+				3A203D5B2BD9E2C80020C995 /* Node.swift in Sources */,
 				3A12F9BE2BCE20B50087DF67 /* WorkFlow.swift in Sources */,
-				3AB1C9E72BD6410A003FCE3C /* Request.swift in Sources */,
 				3AB1C9F22BD6B2F9003FCE3C /* FRHTTPCookie.swift in Sources */,
 				3A5441792BCDF1D900385131 /* PingOrchestrate.docc in Sources */,
 				3AB1C9E92BD6410A003FCE3C /* Response.swift in Sources */,
-				3AB1C9F12BD6B2F9003FCE3C /* FRRestClient.swift in Sources */,
-				3AB1C9ED2BD64679003FCE3C /* FRURLSessionHandler.swift in Sources */,
+				3A203D592BD9DC600020C995 /* Request.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -18,11 +18,11 @@ class DavinciViewModel {
             }
         
         let sdkHeader = Module.of(block: { setup in
-            setup.start { request in
+            setup.start { request, _ in
                 header(request: request)
             }
             
-            setup.next { request in
+            setup.next { request, _ in
                 header(request: request)
             }
         })
@@ -30,12 +30,11 @@ class DavinciViewModel {
         let sessionconfig = SessionConfig()
         
         let Cookie = Module.of(config: sessionconfig, block: { setup in
-            setup.config.
-            setup.start { request in
+            setup.start { request, _ in
                 header(request: request)
             }
             
-            setup.next { request in
+            setup.next { request, _ in
                 header(request: request)
             }
         })
